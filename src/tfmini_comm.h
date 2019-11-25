@@ -63,6 +63,7 @@ namespace tfmini
 
                 m_phy_send(m_device_id, cmd, 8);
 
+
                 while(--search_magic_header_retry)
                 {
                     uint8_t byte = 0;
@@ -98,7 +99,7 @@ namespace tfmini
 
             bool readMeasure(tfmini::Measurement *measure)
             {
-                if(!m_phy_receive || !m_phy_send) return false;
+                if(!m_phy_receive || !m_phy_send || measure == nullptr) return false;
 
                 uint8_t search_magic_header_retry = m_max_search_bytes;
 

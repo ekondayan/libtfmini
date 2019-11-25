@@ -23,12 +23,11 @@
 
 namespace tfmini
 {
-
     // Define the types used troughout the library
-    typedef unsigned char uint8_t;
-    typedef char int8_t;
-    typedef unsigned short uint16_t;
-    typedef short int16_t;
+    using uint8_t  = unsigned char;
+    using int8_t   = char;
+    using uint16_t = unsigned short;
+    using int16_t  = short;
 
     // Structure to hold a measurement
     struct Measurement
@@ -40,8 +39,8 @@ namespace tfmini
     };
 
     // Definition of the functions responsible for the low level send and receive
-    typedef void (*send_t)(uint8_t device_id, const uint8_t *buffer, int16_t len);
-    typedef void (*receive_t)(uint8_t device_id, uint8_t *buffer, int16_t len);
+    using send_t    = void (*)(uint8_t device_id, const uint8_t *buffer, int16_t len);
+    using receive_t = void (*)(uint8_t device_id,       uint8_t *buffer, int16_t len);
 
     // Configuration commands
     enum Command : uint8_t
