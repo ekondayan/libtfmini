@@ -18,7 +18,7 @@ It is self contained and does not rely neither on the C++ STD library nor any ot
 
 # <u>Usage</u>
 
-## Implement SEND and RECEIVE functions
+## Implement `send` and `receive` functions
 
 The library does not provide a low level communication layer, so it needs to be implemented by the user. This is easily done by implementing two global functions for sending and receiving data to/from the device.
 
