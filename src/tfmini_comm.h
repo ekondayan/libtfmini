@@ -1,3 +1,23 @@
+/*
+ *  _____ _____          _       _
+ * |_   _|  ___| __ ___ (_)_ __ (_)
+ *   | | | |_ | '_ ` _ \| | '_ \| |
+ *   | | |  _|| | | | | | | | | | |
+ *   |_| |_|  |_| |_| |_|_|_| |_|_|
+
+ * C++17 header only, driver library for reading TFmini ToF LIDAR sensors
+ * written in modern C++
+ *
+ * Version: 0.1.0
+ * URL: https://github.com/ekondayan/libtfmini.git
+ *
+ * Copyright (c) 2019-2020 Emil Kondayan
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 #ifndef TFMINI_COMM_H
 #define TFMINI_COMM_H
 
