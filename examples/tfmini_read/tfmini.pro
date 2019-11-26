@@ -44,9 +44,3 @@ HEADERS += \
     ../../src/tfmini.h \
     ../../src/tfmini_comm.h \
     ../../src/tfmini_defs.h
-
-DISTFILES += \
-    libfilter/FilterTypes \
-    libfilter/README \
-    libfilter/CONTRIBUTING \
-    libfilter/LICENSE
