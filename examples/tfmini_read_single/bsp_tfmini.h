@@ -8,7 +8,7 @@
  * C++17 header only, driver library for reading TFmini ToF LIDAR sensors
  * written in modern C++
  *
- * Version: 0.1.0
+ * Version: 1.0.1
  * URL: https://github.com/ekondayan/libtfmini.git
  *
  * Copyright (c) 2019-2020 Emil Kondayan

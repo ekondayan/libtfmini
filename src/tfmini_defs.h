@@ -8,7 +8,7 @@
  * C++17 header only, driver library for reading TFmini ToF LIDAR sensors
  * written in modern C++
  *
- * Version: 0.1.0
+ * Version: 1.0.1
  * URL: https://github.com/ekondayan/libtfmini.git
  *
  * Copyright (c) 2019-2020 Emil Kondayan
@@ -32,10 +32,10 @@ namespace tfmini
     // Structure to hold a measurement
     struct Measurement
     {
-            uint16_t    reading         {0};        // Measured distance
-            uint16_t    strength        {0};        // Strength of the beam
-            bool        short_distance  {false};    // Distance mode
-            bool        checksum        {false};
+            uint16_t reading        {0};        // Measured distance
+            uint16_t strength       {0};        // Strength of the beam
+            bool     short_distance {false};    // Distance mode
+            bool     checksum       {false};
     };
 
     // Definition of the functions responsible for the low level send and receive

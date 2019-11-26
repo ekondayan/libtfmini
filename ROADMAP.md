@@ -4,6 +4,4 @@
 
 * Create unit tests
 
-* 
-
 * Add support for TFmini Plus

@@ -71,6 +71,18 @@ A good practice is to subclass `tfmini::TFmini`.
 
 When the an object wants to communicate with the device, it will pass the `device_id` to `send` and `receive`. That way `send` and `receive` will know which device shall be accessed. This is usefull when you have more than one device connected. If you plan to work with just one device, you can safely discard it in the `send` and `receive`.
 
+# <u>Code Organization</u>
+
+The API is organized in two layers: low level and high level.
+
+## Low level API
+
+Defined in `tfmini_comm.h`. It's main purpose is to guarantee the correct transceiving of raw packets from/to the device.
+
+## High level API
+
+Defined in `tfmini.h`. It exposes high level functions for controlling the device. It's purpose is to correctly format the commands and to pass them to the lower level API.
+
 # <u>Examples</u>
 
 In the examples section you can find example applications how to use the library.
