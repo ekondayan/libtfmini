@@ -23,7 +23,6 @@
 
 #include <QFile>
 #include <QTextStream>
-#include <QElapsedTimer>
 
 #include "bsp_tfmini.h"
 

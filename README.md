@@ -4,7 +4,7 @@
 
 # <u>Description</u>
 
-C++17 header only, driver library providing low and high level acces for TFmini ToF LIDAR sensors. The library is designed in such a way that it support working with multiple connected sensors. Supported firmware versions are 15x and 16x. The header only approach greatly simplifies the process of including it into other projects. 
+C++17 header only, driver library providing low and high level access for TFmini ToF LIDAR sensors. The library is designed in such a way that it can work with single or multiple connected sensors. Supported firmware versions are **15x** and **16x**. The header only approach greatly simplifies the process of including it into other projects. 
 
 The minimum C++ standard is [ISO/IEC 14882](https://en.wikipedia.org/wiki/ISO/IEC_14882) (C++17). 
 
@@ -14,7 +14,7 @@ The project is hosted on GitHub [https://github.com/ekondayan/libtfmini](https:/
 
 # <u>Dependencies</u>
 
-It is self contained and does not rely neither on the C++ STD library nor any other external dependencie. The code is just plain C++17.
+It is self contained and does not rely neither on the C++ Standard library nor any other external dependencie. The code is just plain C++17.
 
 # <u>Usage</u>
 
@@ -37,36 +37,43 @@ Those two methods do one simple task - to send a buffer of specified length and 
 An example implementation of  using the QT's SerialPort library
 
 ```cpp
-void send(tfmini::uint8_t device_id, const tfmini::uint8_t *buffer, tfmini::int16_t len)
+void send(uint8_t device_id, const uint8_t *buffer, int16_t len)
 {
-    if(!tf[device_id - 1].m_port.isOpen()) return;
-
-    tf[device_id - 1].m_port.clearError();
-    tf[device_id - 1].m_port.write((const char*)buffer, len);
-    while(tf[device_id - 1].m_port.bytesToWrite() && tf[device_id - 1].m_port.waitForBytesWritten(100));
+    if(!port.isOpen()) return;
+    port.clearError();
+    port.write((const char*)buffer, len);
+    while(port.bytesToWrite() && port.waitForBytesWritten(100));
 }
 ```
 
 ```cpp
-void receive(tfmini::uint8_t device_id, tfmini::uint8_t *buffer, tfmini::int16_t len)
+void receive(uint8_t device_id, uint8_t *buffer, int16_t len)
 {
- if(!tf[device_id - 1].m_port.isOpen()) return;
- tf[device_id - 1].m_port.clearError();
- int num_read = 0;
- do num_read += tf[device_id - 1].m_port.read((char*)(buffer + num_read), len - num_read);
- while(num_read != len && tf[device_id - 1].m_port.waitForReadyRead(100));
+    if(!port.isOpen()) return;
+    port.clearError();
+    int num_read = 0;
+    do num_read += port.read((char*)(buffer + num_read), len - num_read);
+    while(num_read != len && port.waitForReadyRead(100));
 }
 ```
 
-`tf` is an array of `tfmini::TFmini` objects.
+In this example `port` is an object of type `QSerialPort` but you can use any other library.
 
-When instantiating an object of type  `tfmini::TFmini` pass pointers to `send` and `receive` that you have already implemented. 
+## Instantiate an object of type `tfmini::TFmini`
+
+When instantiating an object of type  `tfmini::TFmini` pass pointers to `send` and `receive` functions that you have already implemented. 
 
 ```cpp
-tfmini::TFmini tf{device_id, &send, &receive};
+tfmini::TFmini tfmini(device_id, &send, &receive);
 ```
+
+A good practice is to subclass `tfmini::TFmini`. 
 
 When the an object wants to communicate with the device, it will pass the `device_id` to `send` and `receive`. That way `send` and `receive` will know which device shall be accessed. This is usefull when you have more than one device connected. If you plan to work with just one device, you can safely discard it in the `send` and `receive`.
+
+# <u>Examples</u>
+
+In the examples section you can find example applications how to use the library.
 
 # <u>Download</u>
 
@@ -76,7 +83,7 @@ git clone https://github.com/ekondayan/libtfmini.git libtfmini
 
 # <u>Install</u>
 
-In order to use libtfmini, you just need to download and extractthe header files into you project. In fact, the header files in the libtfmini subdirectory are the
+In order to use libtfmini, you just need to download and extract the header files into you project. In fact, the header files in the libtfmini subdirectory are the
 
 only files required to compile programs with the library. The header files
 

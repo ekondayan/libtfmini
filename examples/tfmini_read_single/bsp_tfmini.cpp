@@ -24,7 +24,7 @@
 
 BSP_TFmini tf{"/dev/ttyUSB0"};
 
-void tfmini::send(uint8_t device_id, const uint8_t *buffer, int16_t len)
+void tfmini::send(tfmini::uint8_t device_id, const tfmini::uint8_t *buffer, tfmini::int16_t len)
 {
     Q_UNUSED(device_id)
 
@@ -34,7 +34,7 @@ void tfmini::send(uint8_t device_id, const uint8_t *buffer, int16_t len)
     while(tf.m_port.bytesToWrite() && tf.m_port.waitForBytesWritten(100));
 }
 
-void tfmini::receive(uint8_t device_id, uint8_t *buffer, int16_t len)
+void tfmini::receive(tfmini::uint8_t device_id, tfmini::uint8_t *buffer, tfmini::int16_t len)
 {
     Q_UNUSED(device_id)
 
