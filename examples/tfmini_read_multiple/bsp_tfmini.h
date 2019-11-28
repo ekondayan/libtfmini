@@ -34,7 +34,8 @@ namespace tfmini
 class BSP_TFmini: public tfmini::TFmini
 {
     public:
-        explicit BSP_TFmini(const QString &port_name);
+        BSP_TFmini(tfmini::uint8_t device_id);
+        void openPort(const QString &port);
 
     private:
         QSerialPort m_port;
@@ -44,6 +45,7 @@ class BSP_TFmini: public tfmini::TFmini
         friend void tfmini::receive(uint8_t device_id, uint8_t *buffer, int16_t len);
 };
 
-extern BSP_TFmini tf;
+constexpr int tf_array_size = 2;
+extern BSP_TFmini tf[tf_array_size];
 
 #endif // BSP_TFMINI_H

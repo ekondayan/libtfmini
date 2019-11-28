@@ -14,7 +14,7 @@ The project is hosted on GitHub [https://github.com/ekondayan/libtfmini](https:/
 
 # <u>Dependencies</u>
 
-It is self contained and does not rely neither on the C++ Standard library nor any other external dependencie. The code is just plain C++17.
+It is self contained and does not rely neither on the C++ Standard Library nor any other external dependencies. The code is just vanila C++17.
 
 # <u>Usage</u>
 
@@ -29,10 +29,10 @@ void receive(uint8_t device_id, uint8_t *buffer, int16_t len);
 
 Those two methods do one simple task - to send a buffer of specified length and to receive a buffer of specified length. This design decision was made for two reasons:
 
-- Communication layer is entirely project specific and it's implementation can differ from project to project. If you develop for a desktop you may want to use the native Linux serial port API or  you may want to use the more user friendly and polished API of QT. If you develop for a MCU you maw want to use the MCU's periphery directly or you may want to use the drivers provided by some RTOS. Those are just an examples of some use cases. The real world is much much more colorfull. 
+- Communication layer is entirely project specific and it's implementation can differ from project to project. If you develop for a desktop you may want to use the native Linux serial port API or  you may want to use the more user friendly and polished API of QT. If you develop for a MCU you may want to use the MCU's periphery directly or you may want to use the drivers provided by some RTOS. Those are just an examples of some use cases. The real world is much much more colorfull. 
 
 - You may wish to have more control over the execution of `send` and `receive`.
-  For example if you want to track the execution time or to count the bytes transfered by the two methods.
+  For example if you want to track  the execution time or to count the bytes transfered by the two methods.
 
 An example implementation of  using the QT's SerialPort library
 
@@ -57,19 +57,46 @@ void receive(uint8_t device_id, uint8_t *buffer, int16_t len)
 }
 ```
 
-In this example `port` is an object of type `QSerialPort` but you can use any other library.
+`port` is an object of type `QSerialPort` but you can use any other library.
+
+`device_id` is used to distinguish the connected devices. If you plan to use only one, you can safely discard it. If you plan to use multiple connected devices, you have to implement such a behaviour in `send` and `receive`. For example `port` can be an array of `QSerialPort` objects, each one connected to a different device.
+
+```cpp
+void send(uint8_t device_id, const uint8_t *buffer, int16_t len)
+{
+    if(!port[device_id].isOpen()) return;
+    port[device_id].clearError();
+    port[device_id].write((const char*)buffer, len);
+    while(port[device_id].bytesToWrite() && port[device_id].waitForBytesWritten(100));
+}
+```
+
+```cpp
+void receive(uint8_t device_id, uint8_t *buffer, int16_t len)
+{
+    if(!port[device_id].isOpen()) return;
+    port[device_id].clearError();
+    int num_read = 0;
+    do num_read += port[device_id].read((char*)(buffer + num_read), len - num_read);
+    while(num_read != len && port[device_id].waitForReadyRead(100));
+}
+```
 
 ## Instantiate an object of type `tfmini::TFmini`
 
-When instantiating an object of type  `tfmini::TFmini` pass pointers to `send` and `receive` functions that you have already implemented. 
+The constructor of `tfmini::TFmini` accepts three arguments:
+
+- `device_id` - this parameter is passed to `send` and `receive` when an object wants to access a device. That way `send` and `receive` will know which device shall be accessed. It is used when you have more than one device connected. If you plan to work with just one device, you can safely discard it.
+
+- `send` pointer to function
+
+- `receive` pointer to function
 
 ```cpp
 tfmini::TFmini tfmini(device_id, &send, &receive);
 ```
 
-A good practice is to subclass `tfmini::TFmini`. 
-
-When the an object wants to communicate with the device, it will pass the `device_id` to `send` and `receive`. That way `send` and `receive` will know which device shall be accessed. This is usefull when you have more than one device connected. If you plan to work with just one device, you can safely discard it in the `send` and `receive`.
+A good practice is to subclass `tfmini::TFmini`.
 
 # <u>Code Organization</u>
 
@@ -81,11 +108,11 @@ Defined in `tfmini_comm.h`. It's main purpose is to guarantee the correct transc
 
 ## High level API
 
-Defined in `tfmini.h`. It exposes high level functions for controlling the device. It's purpose is to correctly format the commands and to pass them to the lower level API.
+Defined in `tfmini.h`. It exposes high level functions for controlling the device. It's purpose is to correctly format the commands and pass them to the lower level API.
 
 # <u>Examples</u>
 
-In the examples section you can find example applications how to use the library.
+In the examples section you can find simple applications how to use the library.
 
 # <u>Download</u>
 
@@ -95,13 +122,7 @@ git clone https://github.com/ekondayan/libtfmini.git libtfmini
 
 # <u>Install</u>
 
-In order to use libtfmini, you just need to download and extract the header files into you project. In fact, the header files in the libtfmini subdirectory are the
-
-only files required to compile programs with the library. The header files
-
-are cross platform. It is not necessary to use CMake or install
-
-anything, just include the header files into your project.
+In order to use libtfmini, you just need to download and extract the header files into you project. In fact, the header files in the libtfmini subdirectory are the only files required to compile programs with the library. The header files are cross platform. It is not necessary to use CMake or install anything, just include the header files into your project.
 
 # <u>License</u>
 

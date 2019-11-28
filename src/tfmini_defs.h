@@ -8,10 +8,10 @@
  * C++17 header only, driver library for reading TFmini ToF LIDAR sensors
  * written in modern C++
  *
- * Version: 1.0.1
+ * Version: 1.0.2
  * URL: https://github.com/ekondayan/libtfmini.git
  *
- * Copyright (c) 2019-2020 Emil Kondayan
+ * Copyright (c) 2019 Emil Kondayan
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -65,18 +65,21 @@ namespace tfmini
 
     enum OutputDataFormat : uint8_t
     {
+        FORMAT_DEFAULT  = 0x01,
         FORMAT_STANDARD = 0x01,
         FORMAT_PIXHAWK  = 0x04
     };
 
     enum DistanceUnit : uint8_t
     {
+        UNIT_DEFAULT = 0x01,
         UNIT_MM = 0x00,
         UNIT_CM = 0x01
     };
 
     enum DetectionPattern : uint8_t
     {
+        DETECTION_DEFAULT = 0x00,
         DETECTION_AUTO = 0x00,
         DETECTION_FIX  = 0x01
     };

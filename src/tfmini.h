@@ -8,10 +8,10 @@
  * C++17 header only, driver library for reading TFmini ToF LIDAR sensors
  * written in modern C++
  *
- * Version: 1.0.1
+ * Version: 1.0.2
  * URL: https://github.com/ekondayan/libtfmini.git
  *
- * Copyright (c) 2019-2020 Emil Kondayan
+ * Copyright (c) 2019 Emil Kondayan
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -41,7 +41,7 @@ namespace tfmini
             Comm::Status setOutputDataFormat(const OutputDataFormat format)
             {
                 m_command_list[CMD_OUTPUT_DATA_FORMAT][6] = format;
-                return runCmd(m_command_list[CMD_OUTPUT_DATA_FORMAT]);
+                return execCmd(m_command_list[CMD_OUTPUT_DATA_FORMAT]);
             }
 
             Comm::Status setOutputPeriod(const uint16_t period_ms)
@@ -50,30 +50,31 @@ namespace tfmini
                 {
                     m_command_list[CMD_OUTPUT_DATA_PERIOD][4] = period_ms & 0x00FF;
                     m_command_list[CMD_OUTPUT_DATA_PERIOD][5] = (period_ms & 0xFF00)>>8;
+                    return execCmd(m_command_list[CMD_OUTPUT_DATA_PERIOD]);
                 }
 
-                return runCmd(m_command_list[CMD_OUTPUT_DATA_PERIOD]);
+                return STATUS_ERROR_PARAMETER;
             }
 
             Comm::Status setDistanceUnit(const DistanceUnit unit)
             {
                 m_command_list[CMD_UNIT_OF_DISTANCE][6] = unit;
-                return runCmd(m_command_list[CMD_UNIT_OF_DISTANCE]);
+                return execCmd(m_command_list[CMD_UNIT_OF_DISTANCE]);
             }
 
             Comm::Status setDetectionPattern(const DetectionPattern pattern)
             {
                 m_command_list[CMD_DETECTION_PATTERN][6] = pattern;
-                return runCmd(m_command_list[CMD_DETECTION_PATTERN]);
+                return execCmd(m_command_list[CMD_DETECTION_PATTERN]);
             }
 
             Comm::Status setDistanceMode(const DistanceMode mode)
             {
-
-                if(setDetectionPattern(DETECTION_FIX) != STATUS_SUCCESS) return STATUS_ERROR_TRANSMISSION;
+                if(setDetectionPattern(DETECTION_FIX) != STATUS_SUCCESS)
+                    return STATUS_ERROR_TRANSMISSION;
 
                 m_command_list[CMD_DISTANCE_MODE][6] = mode;
-                return runCmd(m_command_list[CMD_DISTANCE_MODE]);
+                return execCmd(m_command_list[CMD_DISTANCE_MODE]);
             }
 
             Comm::Status setRangeLimit(const uint16_t range_mm)
@@ -83,21 +84,28 @@ namespace tfmini
                     m_command_list[CMD_RANGE_LIMIT][4] = range_mm & 0x00FF;
                     m_command_list[CMD_RANGE_LIMIT][5] = (range_mm & 0xFF00)>>8;
                     m_command_list[CMD_RANGE_LIMIT][6] = 0x01;
+                    return execCmd(m_command_list[CMD_RANGE_LIMIT]);
                 }
                 else if(range_mm == 0)
                 {
                     m_command_list[CMD_RANGE_LIMIT][4] = 0x00;
                     m_command_list[CMD_RANGE_LIMIT][5] = 0x00;
                     m_command_list[CMD_RANGE_LIMIT][6] = 0x00;
+                    return execCmd(m_command_list[CMD_RANGE_LIMIT]);
                 }
 
-                return runCmd(m_command_list[CMD_RANGE_LIMIT]);
+                return STATUS_ERROR_PARAMETER;
             }
 
             Comm::Status setSignalStrengthLow(const uint8_t low_threshold)
             {
-                if(low_threshold <= 80) m_command_list[CMD_SIGNAL_STRENGTH_LOW][4] = low_threshold;
-                return runCmd(m_command_list[CMD_SIGNAL_STRENGTH_LOW]);
+                if(low_threshold <= 80)
+                {
+                    m_command_list[CMD_SIGNAL_STRENGTH_LOW][4] = low_threshold;
+                    return execCmd(m_command_list[CMD_SIGNAL_STRENGTH_LOW]);
+                }
+
+                return STATUS_ERROR_PARAMETER;
             }
 
             Comm::Status setSignalStrengthHi(const uint16_t hi_threshold)
@@ -106,35 +114,40 @@ namespace tfmini
                 {
                     m_command_list[CMD_SIGNAL_STRENGTH_HI][4] = hi_threshold & 0x00FF;
                     m_command_list[CMD_SIGNAL_STRENGTH_HI][5] = (hi_threshold & 0xFF00)>>8;
+                    return execCmd(m_command_list[CMD_SIGNAL_STRENGTH_HI]);
                 }
-                return runCmd(m_command_list[CMD_SIGNAL_STRENGTH_HI]);
+
+                return STATUS_ERROR_PARAMETER;
             }
 
             Comm::Status setBaudRate(const BaudRate br)
             {
                 m_command_list[ADV_BAUD_RATE][6] = br;
-                return runCmd(m_command_list[ADV_BAUD_RATE]);
+                return execCmd(m_command_list[ADV_BAUD_RATE]);
             }
 
             Comm::Status setTriggerSrc(const TriggerSrc trigger)
             {
                 m_command_list[ADV_TRIGGER_SOURCE][6] = trigger;
-                return runCmd(m_command_list[ADV_TRIGGER_SOURCE]);
+                return execCmd(m_command_list[ADV_TRIGGER_SOURCE]);
             }
 
             Comm::Status triggerMeasurement()
             {
-                return runCmd(m_command_list[ADV_TRIGGER_EXTERNAL]);
+                return execCmd(m_command_list[ADV_TRIGGER_EXTERNAL]);
             }
 
             Comm::Status reset()
             {
-                return runCmd(m_command_list[ADV_RESET]);
+                return execCmd(m_command_list[ADV_RESET]);
             }
 
-        private:
-            Comm::Status runCmd(uint8_t *cmd)
+        protected:
+            Comm::Status execCmd(uint8_t *cmd)
             {
+                if(cmd == nullptr)
+                    return Comm::STATUS_ERROR_TRANSMISSION;
+
                 for(int i = 0; i < 3; ++i)
                 {
                     if(sendCommand(m_command_list[ENTER_COMMAND_MODE]) == STATUS_SUCCESS)
